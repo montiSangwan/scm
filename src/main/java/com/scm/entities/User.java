@@ -1,0 +1,41 @@
+package com.scm.entities;
+
+import java.util.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+
+    @Id
+    @Column(unique = true, nullable = false)
+    private String userId;
+    private String name;
+    @Column(unique = true, nullable = false)
+    private String email;
+    private String password;
+    private String phoneNumber;
+    @Column(length = 1000)
+    private String about;
+    private boolean enabled = false;
+    private boolean emailVerified = false;
+    private boolean phoneVerified = false;
+
+    private Providers providers = Providers.SELF;
+    private String providerUserId;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contact> contacts = new ArrayList<>(); 
+
+}
