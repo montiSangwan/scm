@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -28,11 +30,12 @@ public class User {
     private String phoneNumber;
     @Column(length = 1000)
     private String about;
+    private String profilePic;
     private boolean enabled = false;
     private boolean emailVerified = false;
     private boolean phoneVerified = false;
 
-    private Providers providers = Providers.SELF;
+    private Providers provider = Providers.SELF;
     private String providerUserId;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
