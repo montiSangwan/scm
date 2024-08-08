@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.scm.entities.User;
 import com.scm.forms.UserForm;
+import com.scm.helper.Message;
+import com.scm.helper.MessageType;
 import com.scm.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PageController {
@@ -57,8 +61,9 @@ public class PageController {
     }
 
     /*ModelAttribute -> populate the userForm model attribute with data from a form submitted to the processRegister endpoint */
+    //HttpSession -> to show successful message on current session
     @PostMapping("/do-register")
-    public String processRegister(@ModelAttribute UserForm userForm) {
+    public String processRegister(@ModelAttribute UserForm userForm, HttpSession httpSession) {
         // fetch form data
 
         // validate form data
@@ -72,8 +77,15 @@ public class PageController {
         user.setPhoneNumber(userForm.getPhoneNumber());
         
         User savedUser = userService.saveUser(user);
+        System.out.println(savedUser);
 
         // message = "Registeration successful"
+        Message message = Message.builder()
+                                .content("Registeration Successful")
+                                .type(MessageType.green)
+                            .build();
+        
+        httpSession.setAttribute("message", message);
 
         // redirect to register page
         return "redirect:/register";
