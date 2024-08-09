@@ -2,6 +2,7 @@ package com.scm.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import com.scm.helper.MessageType;
 import com.scm.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class PageController {
@@ -60,13 +62,17 @@ public class PageController {
         return "register";
     }
 
-    /*ModelAttribute -> populate the userForm model attribute with data from a form submitted to the processRegister endpoint */
-    //HttpSession -> to show successful message on current session
+    // @Valid -> to validate the object
+    // ModelAttribute -> populate the userForm model attribute with data from a form submitted to the processRegister endpoint
+    // BindingResult -> if there any validation failure then that error save in bindingResult object
+    // HttpSession -> to show successful message on current session
     @PostMapping("/do-register")
-    public String processRegister(@ModelAttribute UserForm userForm, HttpSession httpSession) {
-        // fetch form data
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult bindingResult, HttpSession httpSession) {
 
         // validate form data
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
 
         // save to database
         User user = new User();
@@ -84,7 +90,6 @@ public class PageController {
                                 .content("Registeration Successful")
                                 .type(MessageType.green)
                             .build();
-        
         httpSession.setAttribute("message", message);
 
         // redirect to register page
